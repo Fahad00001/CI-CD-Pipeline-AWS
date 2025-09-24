@@ -17,16 +17,16 @@ node {
     stage('Deploy to EC2'){
         echo 'Deploying to EC2'
         sh """
-            sudo mkdir -p ${appDir}
+            mkdir -p ${appDir}
             sudo chown -R jenkins:jenkins ${appDir}
 
             rsync -av --delete --exclude='.git' --exclude='node_modules' ./ ${appDir}
 
             cd ${appDir}
-            sudo npm install
-            sudo npm run build
-            sudo fuser -k 3000/tcp || true
-            npm run start
+            npm install
+            npm run build
+            fuser -k 3000/tcp || true
+            nohup npm start &
         """
     }
 }
