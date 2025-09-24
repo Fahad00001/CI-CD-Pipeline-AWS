@@ -21,7 +21,7 @@ export default function Home() {
             .
           </li>
           <li className="tracking-[-.01em]">
-            Save this file.
+            Save this world
           </li>
         </ol>
 
