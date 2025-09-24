@@ -14,17 +14,18 @@ node {
         )
     }
 
-  stage('Deploy to EC2'){
+ stage('Deploy to EC2'){
     echo 'Deploying to EC2'
-    sh """
-        mkdir -p ${appDir}
-        rsync -av --delete --exclude='.git' --exclude='node_modules' ./ ${appDir}
-        cd ${appDir}
-        /usr/bin/npm install
-        /usr/bin/npm run build
-        fuser -k 3000/tcp || true
-        nohup /usr/bin/npm start &
+    bat """
+        mkdir %appDir%
+        xcopy * %appDir% /E /Y /I
+        cd %appDir%
+        call npm install
+        call npm run build
+        taskkill /F /IM node.exe || echo No process found
+        start /B npm run start
     """
 }
+
 
 }
