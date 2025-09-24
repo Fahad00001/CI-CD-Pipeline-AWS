@@ -1,6 +1,5 @@
 node {
-    // Use Windows-style path
-    def appDir = "C:\\var\\www\\nextjs-app"
+    def appDir = '/var/www/nextjs-app'
 
     stage('Clean Workspace'){
         echo 'Cleaning Jenkins Workspace'
@@ -15,19 +14,19 @@ node {
         )
     }
 
-stage('Deploy to EC2') {
-    echo 'Deploying to EC2'
-    bat """
-        mkdir "${appDir}"
-        xcopy /E /Y /I . "${appDir}\\"
-        cd "${appDir}"
-        call npm install
-        call npm run build
-        for /f "tokens=5" %%a in ('netstat -a -n -o ^| findstr :3000 ^| findstr LISTENING') do taskkill /F /PID %%a
-        start /B npm run start
-    """
-}
+    stage('Deploy to EC2'){
+        echo 'Deploying to EC2'
+        sh """
+            sudo mkdir -p ${appDir}
+            sudo chown -R jenkins:jenkins ${appDir}
 
+            rsync -av --delete --exclude='.git' --exclude='node_modules' ./ ${appDir}
 
-
+            cd ${appDir}
+            sudo npm install
+            sudo npm run build
+            sudo fuser -k 3000/tcp || true
+            npm run start
+        """
+    }
 }
