@@ -1,5 +1,6 @@
 node {
-    def appDir = '/var/www/nextjs-app'
+    // Use Windows-style path
+    def appDir = "C:\\var\\www\\nextjs-app"
 
     stage('Clean Workspace'){
         echo 'Cleaning Jenkins Workspace'
